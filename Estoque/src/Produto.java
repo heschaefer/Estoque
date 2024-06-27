@@ -1,9 +1,9 @@
 public class Produto {
-    public String nome;
-    public String codigo;
-    public int quantidadeEmEstoque;
-    public double precoCusto;
-    public double precoVenda;
+    public final String nome;
+    public final String codigo;
+    public final int quantidadeEmEstoque;
+    public final double precoCusto;
+    public final double precoVenda;
 
     public Produto(String nome, String codigo, int quantidadeEmEstoque, double precoCusto, double precoVenda) {
         this.nome = nome;

@@ -1,4 +1,10 @@
+import java.util.InputMismatchException;
+import java.util.Scanner;
 public class MenuService {
+    //Instanciando
+    GerenciadorEstoque gerenciadorEstoque = new GerenciadorEstoque();
+    GerenciadorFornecedores gerenciadorFornecedores = new GerenciadorFornecedores();
+    
         public static final String INICIO_MENU = "\n=== Sistema de Controle de Estoque ===";
         public static final String CADASTRAR_PRODUTO = "1. Cadastrar novo produto";
         public static final String REGISTRAR_ENTRADA = "2. Registrar entrada de produtos";
@@ -14,8 +20,9 @@ public class MenuService {
         public static final String REMOVER_PRODUTO = "12. Remover produto";
         public static final String REMOVER_FORNECEDOR = "13. Remover fornecedor";
         public static final String SAIR = "0. Sair";
+        public static final String OPCAO_USUARIO = "/n Qual deseja acessar?";
         public void exibirMenu() {
-            System.out.println("\n=== Sistema de Controle de Estoque ===");
+            System.out.println(INICIO_MENU);
             System.out.println(CADASTRAR_PRODUTO);
             System.out.println(REGISTRAR_ENTRADA);
             System.out.println(REGISTRAR_SAIDA);
@@ -30,5 +37,43 @@ public class MenuService {
             System.out.println(REMOVER_PRODUTO);
             System.out.println(REMOVER_FORNECEDOR);
             System.out.println(SAIR);
+            System.out.println(OPCAO_USUARIO);
+
         }
+        public void fullMenu(Scanner scanner){
+            int opcao = -1;
+            do {
+            
+            exibirMenu();
+            try {
+                opcao = scanner.nextInt();
+                scanner.nextLine(); // Consumir a quebra de linha
+            } catch (InputMismatchException e) {
+                System.out.println("Opção inválida! Digite um número.");
+                scanner.nextLine(); // Limpar o buffer
+                continue;
+            }
+
+            switch (opcao) {
+                case 1 -> gerenciadorEstoque.cadastrarProduto(scanner);
+                case 2 -> gerenciadorEstoque.registrarEntradaProduto(scanner);
+                case 3 -> gerenciadorEstoque.registrarSaidaProduto(scanner);
+                case 4 -> gerenciadorEstoque.consultarEstoqueProduto(scanner);
+                case 5 -> gerenciadorEstoque.listarTodosProdutos();
+                case 6 -> gerenciadorEstoque.listarProdutosEstoqueBaixo(scanner);
+                case 7 -> gerenciadorFornecedores.cadastrarFornecedor(scanner);
+                case 8 -> gerenciadorFornecedores.listarTodosFornecedores();
+                case 9 -> gerenciadorFornecedores.listarProdutosFornecedor(scanner);
+                case 10 -> gerenciadorEstoque.atualizarProduto(scanner);
+                case 11 -> gerenciadorFornecedores.atualizarFornecedor(scanner);
+                case 12 -> gerenciadorEstoque.removerProduto(scanner);
+                case 13 -> gerenciadorFornecedores.removerFornecedor(scanner);
+                case 0 -> System.out.println("Saindo do sistema...");
+                default -> System.out.println("Opção inválida!");
+            }
+        } while (opcao != 0);
+
+        scanner.close(); // Fechar o scanner ao sair do sistema
     }
+    }
+    
