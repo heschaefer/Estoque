@@ -25,7 +25,7 @@ public class MenuService {
                 case 8 -> fornecedoresService.listarTodosFornecedores();
                 case 9 -> fornecedoresService.listarProdutosFornecedor(scanner);
                 case 10 -> estoqueService.atualizarProduto(scanner);
-                case 11 -> fornecedoresService.atualizarFornecedor();
+                case 11 -> fornecedoresService.atualizarFornecedor(scanner);
                 case 12 -> estoqueService.removerProduto(scanner);
                 case 13 -> fornecedoresService.removerFornecedor(scanner);
                 case 0 -> System.out.println("Saindo do sistema...");
@@ -35,4 +35,5 @@ public class MenuService {
 
         scanner.close(); // Fechar o scanner ao sair do sistema
     }
+    
     }

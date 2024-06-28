@@ -7,8 +7,27 @@ public class EstoqueService {
     private final List<Produto> estoque = new ArrayList<>();
 
     // Adicionar um produto ao estoque
-    public void cadastrarProduto(Scanner scanner, FornecedoresService gerenciadorFornecedores) {
+    public void cadastrarProduto(Scanner scanner, FornecedoresService fornecedoresService) {
         try {
+            Fornecedor fornecedor = null;
+            //Verificação para saber se o usuario quer um fornecedor novo ou algum ja cadastrado
+            EstoqueConstantes.exibirPromptOpcoes();
+            int escolhaFornecedor = scannerInt(scanner);
+            limpabuffer(scanner);
+            if(escolhaFornecedor==1){
+                EstoqueConstantes.exibirPromptCnpjFornecedor();
+                String cnpjFornecedor = scannerString(scanner);
+                fornecedor = fornecedoresService.buscarFornecedorPorCNPJ(cnpjFornecedor);
+                if(fornecedor==null){
+                    EstoqueConstantes.exibirPromptFornecedorNaoEncontrado();
+                    return;
+                } else if (escolhaFornecedor == 2) {
+                    fornecedor = fornecedoresService.cadastrarFornecedor(scanner);
+                } else {
+                    EstoqueConstantes.exibirPromptEntradaInvalida();
+                    return;
+            }
+            }
             EstoqueConstantes.exibirPromptNomeProduto();
             String nome = scannerString(scanner);
     
@@ -26,25 +45,12 @@ public class EstoqueService {
             EstoqueConstantes.exibirPromptPrecoDeVenda();
             double precoVenda = scannerDouble(scanner);
             limpabuffer(scanner); // Consumir a quebra de linha
-    
-            EstoqueConstantes.exibirPromptNomeFornecedor();
-            String nomeFornecedor = scannerString(scanner);
-    
-            EstoqueConstantes.exibirPromptCnpjFornecedor();
-            String cnpjFornecedor = scannerString(scanner);
-    
-            // Buscar ou criar o fornecedor
-            Fornecedor fornecedor = gerenciadorFornecedores.buscarFornecedorPorCNPJ(cnpjFornecedor);
-            if (fornecedor == null) {
-                fornecedor = new Fornecedor(nomeFornecedor, cnpjFornecedor);
-                gerenciadorFornecedores.cadastrarFornecedor(fornecedor);
-            }
-            // Criar o novo produto
+            
         Produto novoProduto = new Produto(nome, codigo, quantidadeEmEstoque, precoCusto, precoVenda, fornecedor);
 
         // Adicionar o produto ao estoque e ao fornecedor
         estoque.add(novoProduto);
-        gerenciadorFornecedores.adicionarProdutoFornecedor(cnpjFornecedor, novoProduto);
+        fornecedoresService.adicionarProdutoFornecedor(fornecedor.cnpj, novoProduto);
 
         EstoqueConstantes.exibirPromptProdutoSucesso();
     } catch (InputMismatchException e) {
@@ -52,10 +58,32 @@ public class EstoqueService {
         limpabuffer(scanner); // Limpar o buffer
     }
     }
-
+    
     // Remover um produto do estoque (por código)
-    public void removerProduto(String codigo) {
-        estoque.removeIf(p -> p.codigo.equals(codigo)); // Remove o primeiro produto encontrado com o código
+    public void removerProduto(Scanner scanner) {
+        try {
+            EstoqueConstantes.exibirPromptCodigoProduto();
+            String codigo = scanner.nextLine();
+    
+            Produto produto = obterProdutoPorCodigo(codigo);
+            if (produto == null) {
+                EstoqueConstantes.exibirPromptNaoEncontrado();
+                return;
+            }
+    
+            EstoqueConstantes.exibirPromptConfirmarRemocaoProduto(produto.nome); // Exibe mensagem de confirmação com o nome do produto
+            String confirmacao = scannerString(scanner);
+    
+            if (confirmacao.equalsIgnoreCase("s")) {
+                estoque.removeIf(p -> p.codigo.equals(codigo)); // Remove o produto com o código fornecido
+                EstoqueConstantes.exibirPromptProdutoRemovido();
+            } else {
+                EstoqueConstantes.exibirPromptRemocaoCancelada();
+            }
+        } catch (InputMismatchException e) {
+            EstoqueConstantes.exibirPromptEntradaInvalida();
+            limpabuffer(scanner); // Limpar o buffer
+        }
     }
 
     // Atualizar a quantidade em estoque de um produto (por código)
@@ -166,7 +194,53 @@ public class EstoqueService {
                .filter(produto -> produto.quantidadeEmEstoque < limite)
                .forEach(this::mostrarQuantidadeEmEstoque);
     }
+    // Atualizar produtos ja existentes
+    public void atualizarProduto(Scanner scanner) {
+        try {
+            EstoqueConstantes.exibirPromptCodigoProduto();
+            String codigo = scannerString(scanner);
     
+            Produto produto = obterProdutoPorCodigo(codigo);
+            if (produto == null) {
+                EstoqueConstantes.exibirPromptNaoEncontrado();
+                return;
+            }
+            EstoqueConstantes.exibirPromptOpcaoAtualizarProduto();
+            int opcao = scannerInt(scanner);
+            limpabuffer(scanner); // Consumir a quebra de linha
+    
+            switch (opcao) {
+                case 1 -> {
+                    EstoqueConstantes.exibirPromptNomeProduto();
+                    produto.nome = scannerString(scanner);
+                }
+                case 2 -> {
+                    EstoqueConstantes.exibirPromptQuantidadeEmEstoque();
+                    produto.quantidadeEmEstoque = scannerInt(scanner);
+                    limpabuffer(scanner); // Consumir a quebra de linha
+                }
+                case 3 -> {
+                    EstoqueConstantes.exibirPromptPrecoDeCusto();
+                    produto.precoCusto = scannerDouble(scanner);
+                    limpabuffer(scanner); // Consumir a quebra de linha
+                }
+                case 4 -> {
+                    EstoqueConstantes.exibirPromptPrecoDeVenda();
+                    produto.precoVenda = scannerDouble(scanner);
+                    limpabuffer(scanner); // Consumir a quebra de linha
+                }
+                case 0 -> {
+                    return; // Volta ao menu principal
+                }
+                default -> EstoqueConstantes.exibirPromptEntradaInvalida();
+            }
+    
+            EstoqueConstantes.exibirPromptProdutoAtualizado();
+        } catch (InputMismatchException e) {
+            EstoqueConstantes.exibirPromptEntradaInvalida();
+            scanner.nextLine(); // Limpar o buffer
+        }
+    }
     //Utilitarios
     private String scannerString(Scanner scanner) {
         String nome = scanner.nextLine();

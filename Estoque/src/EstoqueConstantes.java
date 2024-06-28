@@ -17,40 +17,56 @@ public class EstoqueConstantes {
     private static final String LISTA_PRODUTOS = "\n=== Lista de Produtos ===";
     private static final String ESTOQUE_VAZIO = "O estoque está vazio.";
     private static final String ESTOQUE_BAIXO = "Digite o limite de estoque para considerar um produto com estoque baixo:";
-    private static final String INICIO_MENU = "\n=== Sistema de Controle de Estoque ===";
-    private static final String CADASTRAR_PRODUTO = "1. Cadastrar novo produto";
-    private static final String REGISTRAR_ENTRADA = "2. Registrar entrada de produtos";
-    private static final String REGISTRAR_SAIDA = "3. Registrar saída de produtos (venda)";
-    private static final String CONSULTAR_ESTOQUE = "4. Consultar estoque de um produto";
-    private static final String LISTAR_PRODUTOS = "5. Listar todos os produtos";
-    private static final String LISTAR_ESTOQUE_BAIXO = "6. Listar produtos com estoque baixo";
-    private static final String CADASTRAR_FORNECEDOR = "7. Cadastrar novo fornecedor";
-    private static final String LISTAR_FORNECEDORES = "8. Listar todos os fornecedores";
-    private static final String LISTAR_PRODUTOS_FORNECEDOR = "9. Listar produtos de um fornecedor";
-    private static final String ATUALIZAR_PRODUTO = "10. Atualizar informações de um produto";
-    private static final String ATUALIZAR_FORNECEDOR = "11. Atualizar informações de um fornecedor";
-    private static final String REMOVER_PRODUTO = "12. Remover produto";
-    private static final String REMOVER_FORNECEDOR = "13. Remover fornecedor";
-    private static final String SAIR = "0. Sair";
-    private static final String OPCAO_USUARIO = "/n Qual deseja acessar?";
+    private static final String OPCOES_MENU = """
+    === Sistema de Controle de Estoque ===
+    1. Cadastrar novo produto
+    2. Registrar entrada de produtos
+    3. Registrar saída de produtos (venda)
+    4. Consultar estoque de um produto
+    5. Listar todos os produtos
+    6. Listar produtos com estoque baixo
+    7. Cadastrar novo fornecedor
+    8. Listar todos os fornecedores
+    9. Listar produtos de um fornecedor
+    10. Atualizar informações de um produto
+    11. Atualizar informações de um fornecedor
+    12. Remover produto
+    13. Remover fornecedor
+    0. Sair
     
+    Qual deseja acessar?
+    """;
+    
+    private static final String FORNECEDOR_EXISTENTE = "Já existe um fornecedor com este CNPJ!";
+    private static final String FORNECEDOR_CADASTRADO = "Fornecedor cadastrado com sucesso!";
+    private static final String OPCOES_1_2 = "Deseja usar um fornecedor existente (1) ou cadastrar um novo(2)?";
+    private static final String FORNECEDOR_NAO_ENCONTRADO = "Fornecedor não encontrado.";
+    private static final String OPCOES_ATUALIZAR_PRODUTO = """
+    === Atualizar Produto ===
+    1. Nome
+    2. Quantidade em Estoque
+    3. Preço de Custo
+    4. Preço de Venda
+    0. Voltar
+    """;
+    private static final String PRODUTO_ATUALIZADO = "Produto atualizado com sucesso!";
+    private static final String MENU_ATUALIZAR_FORNECEDOR = """
+    "\n=== Atualizar Fornecedor ===
+    1. Nome
+    0. Voltar
+
+    Escolha o dado que deseja atualizar:
+    """;
+    private static final String FORNECEDOR_ATUALIZADO = "Fornecedor atualizado com sucesso!";
+    private static final String CONFIRMAR_REMOCAO_PRODUTO = "Deseja realmente remover o produto %s? (s/n): ";
+    private static final String PRODUTO_REMOVIDO = "Produto removido com sucesso!";
+    private static final String REMOCAO_CANCELADA = "Remoção cancelada.";
+    private static final String CONFIRMAR_REMOCAO_FORNECEDOR = "Deseja realmente remover o fornecedor %s? (s/n): ";
+    private static final String FORNECEDOR_REMOVIDO = "Fornecedor removido com sucesso!";
+    private static final String FORNECEDOR_COM_PRODUTOS = "Não é possível remover o fornecedor, pois ele possui produtos cadastrados.";
+
     public static void exibirMenu() {
-        System.out.println(INICIO_MENU);
-        System.out.println(CADASTRAR_PRODUTO);
-        System.out.println(REGISTRAR_ENTRADA);
-        System.out.println(REGISTRAR_SAIDA);
-        System.out.println(CONSULTAR_ESTOQUE);
-        System.out.println(LISTAR_PRODUTOS);
-        System.out.println(LISTAR_ESTOQUE_BAIXO);
-        System.out.println(CADASTRAR_FORNECEDOR);
-        System.out.println(LISTAR_FORNECEDORES);
-        System.out.println(LISTAR_PRODUTOS_FORNECEDOR);
-        System.out.println(ATUALIZAR_PRODUTO);
-        System.out.println(ATUALIZAR_FORNECEDOR);
-        System.out.println(REMOVER_PRODUTO);
-        System.out.println(REMOVER_FORNECEDOR);
-        System.out.println(SAIR);
-        System.out.println(OPCAO_USUARIO);
+        System.out.println(OPCOES_MENU);
     }
     public static void exibirPromptNomeProduto() {
         System.out.print(NOME_DO_PRODUTO);
@@ -106,5 +122,46 @@ public class EstoqueConstantes {
     public static void exibirPromptEstoqueBaixo() {
         System.out.println(ESTOQUE_BAIXO);
     }
-    
+    public static void exibirPromptFornecedorExistente(){
+        System.out.println(FORNECEDOR_EXISTENTE);
+    }
+    public static void exibirPromptFornecedorCadastrado(){
+        System.out.println(FORNECEDOR_CADASTRADO);
+    }
+    public static void exibirPromptOpcoes(){
+        System.out.println(OPCOES_1_2);
+    }
+    public static void exibirPromptFornecedorNaoEncontrado(){
+        System.out.println(FORNECEDOR_NAO_ENCONTRADO);
+    }
+    public static void exibirPromptOpcaoAtualizarProduto(){
+        System.out.println(OPCOES_ATUALIZAR_PRODUTO);
+    }
+    public static void exibirPromptProdutoAtualizado(){
+        System.out.println(PRODUTO_ATUALIZADO);
+    }
+    public static void exibirPromptMenuAtualizarFornecedor(){
+        System.out.println(MENU_ATUALIZAR_FORNECEDOR);
+    }
+    public static void exibirPromptFornecedorAtualizado(){
+        System.out.println(FORNECEDOR_ATUALIZADO);
+    }
+    public static void exibirPromptProdutoRemovido(){
+        System.out.println(PRODUTO_REMOVIDO);
+    }
+    public static void exibirPromptRemocaoCancelada(){
+        System.out.println(REMOCAO_CANCELADA);
+    }
+    public static void exibirPromptFornecedorRemovido(){
+        System.out.println(FORNECEDOR_REMOVIDO);
+    }
+    public static void exibirPromptFornecedorComProdutos(){
+        System.out.println(FORNECEDOR_COM_PRODUTOS);
+    }
+    public static void exibirPromptConfirmarRemocaoProduto(String nomeProduto) {
+        System.out.printf(CONFIRMAR_REMOCAO_PRODUTO, nomeProduto);
+    }
+    public static void exibirPromptConfirmarRemocaoFornecedor(String nomeFornecedor) {
+        System.out.printf(CONFIRMAR_REMOCAO_FORNECEDOR, nomeFornecedor);
+    }
 }
