@@ -2,10 +2,10 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
-public class InterfaceEstoque {
+public class Main {
     private GerenciadorEstoque gerenciadorEstoque;
     private GerenciadorFornecedores gerenciadorFornecedores;
-    private Scanner scanner = new Scanner(System.in);
+    private Scanner scanner = new Scanner(System.in);-=
 
     public InterfaceEstoque(GerenciadorEstoque gerenciadorEstoque, GerenciadorFornecedores gerenciadorFornecedores) {
         this.gerenciadorEstoque = gerenciadorEstoque;

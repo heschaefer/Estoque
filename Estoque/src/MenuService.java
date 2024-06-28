@@ -2,8 +2,8 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 public class MenuService {
     //Instanciando
-    GerenciadorEstoque gerenciadorEstoque = new GerenciadorEstoque();
-    GerenciadorFornecedores gerenciadorFornecedores = new GerenciadorFornecedores();
+    EstoqueService EstoqueService = new EstoqueService();
+    FornecedoresService fornecedoresService = new FornecedoresService();
     
         public static final String INICIO_MENU = "\n=== Sistema de Controle de Estoque ===";
         public static final String CADASTRAR_PRODUTO = "1. Cadastrar novo produto";
@@ -55,18 +55,18 @@ public class MenuService {
             }
 
             switch (opcao) {
-                case 1 -> gerenciadorEstoque.cadastrarProduto(scanner);
-                case 2 -> gerenciadorEstoque.registrarEntradaProduto(scanner);
-                case 3 -> gerenciadorEstoque.registrarSaidaProduto(scanner);
-                case 4 -> gerenciadorEstoque.consultarEstoqueProduto(scanner);
-                case 5 -> gerenciadorEstoque.listarTodosProdutos();
-                case 6 -> gerenciadorEstoque.listarProdutosEstoqueBaixo(scanner);
+                case 1 -> EstoqueService.cadastrarProduto(scanner, fornecedoresService);
+                case 2 -> EstoqueService.registrarEntradaProduto(scanner);
+                case 3 -> EstoqueService.registrarSaidaProduto(scanner);
+                case 4 -> EstoqueService.consultarEstoqueProduto(scanner);
+                case 5 -> EstoqueService.listarTodosProdutos();
+                case 6 -> EstoqueService.listarProdutosEstoqueBaixo(scanner);
                 case 7 -> gerenciadorFornecedores.cadastrarFornecedor(scanner);
                 case 8 -> gerenciadorFornecedores.listarTodosFornecedores();
                 case 9 -> gerenciadorFornecedores.listarProdutosFornecedor(scanner);
-                case 10 -> gerenciadorEstoque.atualizarProduto(scanner);
+                case 10 -> EstoqueService.atualizarProduto(scanner);
                 case 11 -> gerenciadorFornecedores.atualizarFornecedor(scanner);
-                case 12 -> gerenciadorEstoque.removerProduto(scanner);
+                case 12 -> EstoqueService.removerProduto(scanner);
                 case 13 -> gerenciadorFornecedores.removerFornecedor(scanner);
                 case 0 -> System.out.println("Saindo do sistema...");
                 default -> System.out.println("Opção inválida!");

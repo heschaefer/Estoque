@@ -1,16 +1,18 @@
 public class Produto {
-    public final String nome;
-    public final String codigo;
-    public final int quantidadeEmEstoque;
-    public final double precoCusto;
-    public final double precoVenda;
+    public String nome;
+    public String codigo;
+    public int quantidadeEmEstoque;
+    public double precoCusto;
+    public double precoVenda;
+    public Fornecedor fornecedor;
 
-    public Produto(String nome, String codigo, int quantidadeEmEstoque, double precoCusto, double precoVenda) {
+    public Produto(String nome, String codigo, int quantidadeEmEstoque, double precoCusto, double precoVenda, Fornecedor fornecedor) {
         this.nome = nome;
         this.codigo = codigo;
         this.quantidadeEmEstoque = quantidadeEmEstoque;
         this.precoCusto = precoCusto;
         this.precoVenda = precoVenda;
+        this.fornecedor = fornecedor;
     }
 
     @Override

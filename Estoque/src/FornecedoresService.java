@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class GerenciadorFornecedores {
+public class FornecedoresService {
     private final List<Fornecedor> fornecedores = new ArrayList<>();
 
     // Cadastrar um novo fornecedor
