@@ -9,14 +9,14 @@ public class EstoqueConstantes {
     private static final String ENTRADA_INVALIDA = "Entrada inválida! Digite os dados corretamente.";
     private static final String PRODUTO_SUCESSO = "Produto cadastrado com sucesso!";
     private static final String NAO_ENCONTRADO = "Produto não encontrado!";
-    private static final String QUANTIDADE_ENTRADA = "Digite a quantidade de produtos que entraram no estoque";
+    private static final String QUANTIDADE_ENTRADA = "Digite a quantidade de produtos que entraram no estoque: ";
     private static final String ENTRADA_VALIDA = "Entrada de produto registrada com sucesso!";
     private static final String QUANTIDADE_SAIDA = "Digite a quantidade de produtos que saíram do estoque: ";
     private static final String SAIDA_VALIDA = "Saída de produto registrada com sucesso!";
     private static final String SAIDA_INVALIDA = "Quantidade de saída inválida!";
     private static final String LISTA_PRODUTOS = "\n=== Lista de Produtos ===";
     private static final String ESTOQUE_VAZIO = "O estoque está vazio.";
-    private static final String ESTOQUE_BAIXO = "Digite o limite de estoque para considerar um produto com estoque baixo:";
+    private static final String ESTOQUE_BAIXO = "Digite o limite de estoque para considerar um produto com estoque baixo: ";
     private static final String OPCOES_MENU = """
     === Sistema de Controle de Estoque ===
     1. Cadastrar novo produto
@@ -66,7 +66,7 @@ public class EstoqueConstantes {
     private static final String FORNECEDOR_COM_PRODUTOS = "Não é possível remover o fornecedor, pois ele possui produtos cadastrados.";
 
     public static void exibirMenu() {
-        System.out.println(OPCOES_MENU);
+        System.out.println("\n"+OPCOES_MENU);
     }
     public static void exibirPromptNomeProduto() {
         System.out.print(NOME_DO_PRODUTO);
@@ -90,13 +90,13 @@ public class EstoqueConstantes {
         System.out.print(CNPJ_DO_FORNECEDOR);
     }
     public static void exibirPromptEntradaInvalida() {
-        System.out.print(ENTRADA_INVALIDA);
+        System.out.println(ENTRADA_INVALIDA);
     }
     public static void exibirPromptProdutoSucesso() {
-        System.out.print(PRODUTO_SUCESSO);
+        System.out.println(PRODUTO_SUCESSO);
     }
     public static void exibirPromptNaoEncontrado() {
-        System.out.print(NAO_ENCONTRADO);
+        System.out.println(NAO_ENCONTRADO);
     }
     public static void exibirPromptQuantidadeEntrada() {
         System.out.print(QUANTIDADE_ENTRADA);
@@ -105,19 +105,19 @@ public class EstoqueConstantes {
         System.out.print(QUANTIDADE_SAIDA);
     }
     public static void exibirPromptSaidaInvalida() {
-        System.out.print(SAIDA_INVALIDA);
+        System.out.println(SAIDA_INVALIDA);
     }
     public static void exibirPromptSaidaValida() {
-        System.out.print(SAIDA_VALIDA);
+        System.out.println(SAIDA_VALIDA);
     }
     public static void exibirPromptEntradaValida() {
-        System.out.print(ENTRADA_VALIDA);
+        System.out.println(ENTRADA_VALIDA);
     }
     public static void exibirPromptListaProdutos() {
-        System.out.print(LISTA_PRODUTOS);
+        System.out.println(LISTA_PRODUTOS);
     }
     public static void exibirPromptEstoqueVazio() {
-        System.out.print(ESTOQUE_VAZIO);
+        System.out.println(ESTOQUE_VAZIO);
     }
     public static void exibirPromptEstoqueBaixo() {
         System.out.println(ESTOQUE_BAIXO);

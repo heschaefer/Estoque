@@ -13,10 +13,8 @@ public class Fornecedor {
 
     @Override
     public String toString() {
-        return "Fornecedor{" +
-                "nome='" + nome + '\'' +
-                ", cnpj='" + cnpj + '\'' +
-                ", produtosFornecidos=" + produtosFornecidos +
-                '}';
+        return  "Nome: " + nome + 
+                "\nCnpj: " + cnpj +
+                "\nProdutos Fornecidos: " + produtosFornecidos; 
     }
 }

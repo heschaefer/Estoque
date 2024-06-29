@@ -14,19 +14,21 @@ public class EstoqueService {
             EstoqueConstantes.exibirPromptOpcoes();
             int escolhaFornecedor = scannerInt(scanner);
             limpabuffer(scanner);
-            if(escolhaFornecedor==1){
-                EstoqueConstantes.exibirPromptCnpjFornecedor();
-                String cnpjFornecedor = scannerString(scanner);
-                fornecedor = fornecedoresService.buscarFornecedorPorCNPJ(cnpjFornecedor);
-                if(fornecedor==null){
-                    EstoqueConstantes.exibirPromptFornecedorNaoEncontrado();
-                    return;
-                } else if (escolhaFornecedor == 2) {
-                    fornecedor = fornecedoresService.cadastrarFornecedor(scanner);
-                } else {
+            switch (escolhaFornecedor) {
+                case 1 -> {
+                    EstoqueConstantes.exibirPromptCnpjFornecedor();
+                    String cnpjFornecedor = scannerString(scanner);
+                    fornecedor = fornecedoresService.buscarFornecedorPorCNPJ(cnpjFornecedor);
+                    if(fornecedor==null){
+                        EstoqueConstantes.exibirPromptFornecedorNaoEncontrado();
+                        return;
+                    }
+                }
+                case 2 -> fornecedor = fornecedoresService.cadastrarFornecedor(scanner);
+                default -> {
                     EstoqueConstantes.exibirPromptEntradaInvalida();
                     return;
-            }
+                }
             }
             EstoqueConstantes.exibirPromptNomeProduto();
             String nome = scannerString(scanner);

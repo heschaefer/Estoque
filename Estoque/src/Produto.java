@@ -17,12 +17,11 @@ public class Produto {
 
     @Override
     public String toString() {
-        return "Produto{" +
-                "nome='" + nome + '\'' +
-                ", codigo='" + codigo + '\'' +
-                ", quantidadeEmEstoque=" + quantidadeEmEstoque +
-                ", precoCusto=" + precoCusto +
-                ", precoVenda=" + precoVenda +
-                '}';
+        return  "Nome: " + nome +
+                "\nCodigo: " + codigo +
+                "\nQuantidade em estoque: " + quantidadeEmEstoque +
+                "\nPreço de custo: " + precoCusto +
+                "\nPreço de venda: " + precoVenda +
+                "\nFornecedor: "+ fornecedor.nome;
     }
 }

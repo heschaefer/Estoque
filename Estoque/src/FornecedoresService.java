@@ -108,8 +108,19 @@ public class FornecedoresService {
     }
 
     // Listar todos os fornecedores cadastrados
-    public List<Fornecedor> listarTodosFornecedores() {
-        return new ArrayList<>(fornecedores); // Retorna uma cópia da lista
+    public void listarTodosFornecedores() {
+        if (fornecedores.isEmpty()) {
+            System.out.println("Não há fornecedores cadastrados.");
+            return;
+        }
+    
+        System.out.println("\n=== Lista de Fornecedores ===");
+        fornecedores.stream()
+                    .forEach(fornecedor -> {
+                        System.out.println("------------------------");
+                        System.out.println(fornecedor); // Imprime os dados do fornecedor usando o método toString()
+                        System.out.println("------------------------");
+                    });
     }
 
     // Listar produtos fornecidos por um determinado fornecedor (por CNPJ)
@@ -161,10 +172,6 @@ public class FornecedoresService {
     private int scannerInt(Scanner scanner) {
         int quantidadeEmEstoque = scanner.nextInt();
         return quantidadeEmEstoque;
-    }
-    private double scannerDouble(Scanner scanner) {
-        double precoCusto = scanner.nextDouble();
-        return precoCusto;
     }
     private void limpabuffer(Scanner scanner){
         scanner.nextLine();
