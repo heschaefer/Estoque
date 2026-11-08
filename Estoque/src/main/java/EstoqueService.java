@@ -121,28 +121,79 @@ public class EstoqueService {
         try {
             EstoqueConstantes.exibirPromptCodigoProduto();
             String codigo = scannerString(scanner);
-        
+
+            // A busca continua aqui porque a mensagem "Produto nao encontrado!" precisa
+            // aparecer ANTES de pedir a quantidade, exatamente como era antes.
             Produto produto = obterProdutoPorCodigo(codigo);
             if (produto == null) {
                 EstoqueConstantes.exibirPromptNaoEncontrado();
                 return;
             }
-        
+
             EstoqueConstantes.exibirPromptQuantidadeSaida();
             int quantidadeSaida = scannerInt(scanner);
             limpabuffer(scanner); // Consumir a quebra de linha
-        
-            if (quantidadeSaida <= 0 || quantidadeSaida > produto.quantidadeEmEstoque) {
+
+            // A regra de negocio em si ficou em registrarSaida(String, int).
+            // Aqui so sobrou a leitura das entradas e a exibicao das mensagens.
+            if (registrarSaida(codigo, quantidadeSaida)) {
+                EstoqueConstantes.exibirPromptSaidaValida();
+            } else {
                 EstoqueConstantes.exibirPromptSaidaInvalida();
-                return;
             }
-        
-            produto.quantidadeEmEstoque -= quantidadeSaida;
-            EstoqueConstantes.exibirPromptSaidaValida();
         } catch (InputMismatchException e) {
             EstoqueConstantes.exibirPromptEntradaInvalida(); // Reutilizei a mensagem de entrada inválida, já que o erro é semelhante
             limpabuffer(scanner); // Limpar o buffer
         }
+    }
+
+    /**
+     * Regra de negocio da saida de estoque, sem Scanner e sem System.out.
+     * E este metodo que os testes JUnit e a API HTTP chamam.
+     *
+     * A quantidade valida e um inteiro de 1 ate a quantidade atual em estoque, inclusive.
+     *
+     * @return true se a saida foi registrada (estoque foi diminuido);
+     *         false se o produto nao existe ou se a quantidade e invalida
+     *         (nesse caso o estoque NAO muda).
+     */
+    public boolean registrarSaida(String codigo, int quantidade) {
+        Produto produto = obterProdutoPorCodigo(codigo);
+        if (produto == null) {
+            return false; // produto inexistente
+        }
+        if (quantidade <= 0 || quantidade > produto.quantidadeEmEstoque) {
+            return false; // quantidade fora da faixa permitida
+        }
+        produto.quantidadeEmEstoque -= quantidade;
+        return true;
+    }
+
+    /**
+     * Cadastra um produto a partir de parametros, sem Scanner.
+     * Serve para montar o cenario dos testes JUnit e para a API HTTP.
+     *
+     * @return o produto criado, ou null se algum dado for invalido.
+     */
+    public Produto cadastrarProduto(String nome, String codigo, int quantidadeEmEstoque,
+                                    double precoCusto, double precoVenda, Fornecedor fornecedor) {
+        if (nome == null || nome.isBlank()) {
+            return null;
+        }
+        if (codigo == null || codigo.isBlank()) {
+            return null;
+        }
+        if (quantidadeEmEstoque < 0 || precoCusto < 0 || precoVenda < 0) {
+            return null;
+        }
+        if (fornecedor == null) {
+            return null;
+        }
+
+        Produto novoProduto = new Produto(nome, codigo, quantidadeEmEstoque, precoCusto, precoVenda, fornecedor);
+        estoque.add(novoProduto);
+        fornecedor.produtosFornecidos.add(novoProduto);
+        return novoProduto;
     }
     
     //Consulta o estoque de um produto especifico

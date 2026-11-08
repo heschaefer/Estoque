@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.estoque</groupId>
+  <artifactId>estoque</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
+
+  <name>Controle de Estoque</name>
+  <description>Sistema de controle de estoque em Java (console) usado na disciplina de Qualidade e Teste de Software.</description>
+
+  <properties>
+    <!-- Compila para Java 17 (mesmo que o JDK instalado seja mais novo). -->
+    <maven.compiler.release>17</maven.compiler.release>
+
+    <!-- Todos os arquivos .java estao em UTF-8 (tem acentuacao nas mensagens). -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <!-- Classe executada por "mvn exec:java". Pode ser trocada na linha de comando
+         com -Dexec.mainClass=OutraClasse -->
+    <exec.mainClass>Main</exec.mainClass>
+
+    <junit.version>5.11.3</junit.version>
+    <javalin.version>6.3.0</javalin.version>
+    <jackson.version>2.17.2</jackson.version>
+    <slf4j.version>2.0.16</slf4j.version>
+  </properties>
+
+  <dependencies>
+    <!-- JUnit 5 (Jupiter): usado apenas nos testes, por isso scope "test". -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Javalin: servidor HTTP minimalista usado pela ApiMain (nao e Spring). -->
+    <dependency>
+      <groupId>io.javalin</groupId>
+      <artifactId>javalin</artifactId>
+      <version>${javalin.version}</version>
+    </dependency>
+
+    <!-- Jackson: converte JSON <-> objetos Java. O Javalin 6 nao traz o Jackson
+         junto, entao ele precisa ser declarado aqui para ctx.json()/bodyAsClass()
+         funcionarem. -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+
+    <!-- Logger simples, exigido pelo Javalin (sem ele o console enche de avisos do SLF4J). -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <!-- Nome do jar gerado em target/: estoque.jar -->
+    <finalName>estoque</finalName>
+
+    <plugins>
+      <!-- Compilacao -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+      </plugin>
+
+      <!-- Surefire: e o plugin que executa os testes JUnit no "mvn test". -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.2</version>
+        <configuration>
+          <!-- Garante acentuacao correta nos relatorios e na saida dos testes. -->
+          <argLine>-Dfile.encoding=UTF-8</argLine>
+        </configuration>
+      </plugin>
+
+      <!-- Gera o jar ja com a classe principal no manifesto, permitindo
+           rodar o console com: java -jar target/estoque.jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <!-- Permite rodar sem empacotar: mvn exec:java -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <mainClass>${exec.mainClass}</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

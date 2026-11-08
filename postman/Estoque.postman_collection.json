@@ -1,0 +1,362 @@
+{
+	"info": {
+		"_postman_id": "7c1f2e84-5a3b-4d26-9f10-6b8e4d2a1c33",
+		"name": "Estoque - Regra de saída de estoque",
+		"description": "Teste de SISTEMA da regra de saída de estoque, via API HTTP.\n\nREGRA SOB TESTE\nA quantidade de saída deve ser um inteiro de 1 até a quantidade atual em estoque, inclusive. Quantidade <= 0 ou maior que o estoque é recusada e o estoque não muda.\n\nÉ a mesma regra coberta pelo teste de componente EstoqueServiceTest (JUnit 5). Lá ela é chamada direto pelo método EstoqueService.registrarSaida; aqui ela é exercitada de fora, passando por HTTP e JSON.\n\nANTES DE RODAR\nSuba a API com:\n    cd Estoque\n    mvn exec:java -Dexec.mainClass=ApiMain\n\nA API fica em http://localhost:7070 (valor da variável baseUrl).\n\nCOMO RODAR\nUse o Collection Runner do Postman e execute as requisições NA ORDEM, pois cada uma depende do estado deixada pela anterior.\n\nOBSERVAÇÃO\nA primeira requisição gera um código de produto único (QTS-<timestamp>) e o guarda na variável codigoProduto. Isso permite rodar a coleção várias vezes seguidas contra a mesma API sem conflito de código repetido.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Cadastrar produto com estoque 10",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// Gera um código único para esta execução da coleção.",
+							"// Sem isso, rodar a coleção duas vezes contra a mesma API criaria",
+							"// dois produtos com o mesmo código e o resultado seria enganoso.",
+							"pm.collectionVariables.set(\"codigoProduto\", \"QTS-\" + Date.now());"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// Monta o cenário: um produto com 10 unidades em estoque.",
+							"",
+							"pm.test(\"Status 201 - produto cadastrado\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"const body = pm.response.json();",
+							"",
+							"pm.test(\"A resposta traz o código que foi enviado\", function () {",
+							"    pm.expect(body.codigo).to.eql(pm.collectionVariables.get(\"codigoProduto\"));",
+							"});",
+							"",
+							"pm.test(\"O produto nasce com 10 unidades em estoque\", function () {",
+							"    pm.expect(body.quantidadeEmEstoque).to.eql(10);",
+							"});",
+							"",
+							"pm.test(\"O fornecedor vem achatado, sem objeto aninhado\", function () {",
+							"    pm.expect(body.nomeFornecedor).to.eql(\"Fornecedor Teste\");",
+							"    pm.expect(body.cnpjFornecedor).to.eql(\"11111111111111\");",
+							"    pm.expect(body).to.not.have.property(\"fornecedor\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"codigo\": \"{{codigoProduto}}\",\n    \"nome\": \"Camisa\",\n    \"quantidade\": 10,\n    \"precoCusto\": 40.0,\n    \"precoVenda\": 50.0,\n    \"cnpjFornecedor\": \"11111111111111\",\n    \"nomeFornecedor\": \"Fornecedor Teste\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/produtos",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"produtos"
+					]
+				},
+				"description": "Cria o produto usado por todas as requisições seguintes, com estoque 10.\nO código vem da variável codigoProduto, gerada no script de pré-requisição."
+			},
+			"response": []
+		},
+		{
+			"name": "2. Saída de 11 deve ser recusada (acima do estoque)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// VALOR LIMITE: 11 = estoque + 1, primeiro valor inválido acima da faixa.",
+							"",
+							"pm.test(\"Status 400 - saída acima do estoque é recusada\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"const body = pm.response.json();",
+							"",
+							"pm.test(\"A resposta traz a mensagem de erro esperada\", function () {",
+							"    pm.expect(body.erro).to.eql(\"Quantidade de saída inválida\");",
+							"});",
+							"",
+							"pm.test(\"A resposta não registra nenhuma baixa\", function () {",
+							"    pm.expect(body).to.not.have.property(\"quantidadeEmEstoque\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantidade\": 11\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/produtos/{{codigoProduto}}/saida",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"produtos",
+						"{{codigoProduto}}",
+						"saida"
+					]
+				},
+				"description": "Tenta tirar 11 unidades de um estoque de 10. Deve ser recusada com 400."
+			},
+			"response": []
+		},
+		{
+			"name": "3. GET confirma que o estoque continua 10",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// Esta requisição é a parte mais importante do teste da recusa:",
+							"// não basta a API responder 400, o estoque precisa continuar intacto.",
+							"",
+							"pm.test(\"Status 200 - produto encontrado\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const body = pm.response.json();",
+							"",
+							"pm.test(\"O estoque continua 10 - a recusa não alterou nada\", function () {",
+							"    pm.expect(body.quantidadeEmEstoque).to.eql(10);",
+							"});",
+							"",
+							"pm.test(\"É o mesmo produto cadastrado no passo 1\", function () {",
+							"    pm.expect(body.codigo).to.eql(pm.collectionVariables.get(\"codigoProduto\"));",
+							"    pm.expect(body.nome).to.eql(\"Camisa\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/produtos/{{codigoProduto}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"produtos",
+						"{{codigoProduto}}"
+					]
+				},
+				"description": "Confere que a saída recusada no passo 2 realmente não mexeu no estoque."
+			},
+			"response": []
+		},
+		{
+			"name": "4. Saída de 10 deve zerar o estoque",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// VALOR LIMITE: 10 = estoque atual, último valor válido da faixa.",
+							"",
+							"pm.test(\"Status 200 - saída igual ao estoque é aceita\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const body = pm.response.json();",
+							"",
+							"pm.test(\"A resposta traz o código do produto\", function () {",
+							"    pm.expect(body.codigo).to.eql(pm.collectionVariables.get(\"codigoProduto\"));",
+							"});",
+							"",
+							"pm.test(\"O estoque ficou zerado\", function () {",
+							"    pm.expect(body.quantidadeEmEstoque).to.eql(0);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantidade\": 10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/produtos/{{codigoProduto}}/saida",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"produtos",
+						"{{codigoProduto}}",
+						"saida"
+					]
+				},
+				"description": "Tira exatamente as 10 unidades disponíveis. Deve ser aceita e zerar o estoque."
+			},
+			"response": []
+		},
+		{
+			"name": "5. Saída de 1 com estoque zerado deve ser recusada",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// Com o estoque em 0, a faixa válida fica vazia:",
+							"// nem mesmo 1 unidade pode sair.",
+							"",
+							"pm.test(\"Status 400 - não há estoque para retirar\", function () {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"const body = pm.response.json();",
+							"",
+							"pm.test(\"A resposta traz a mensagem de erro esperada\", function () {",
+							"    pm.expect(body.erro).to.eql(\"Quantidade de saída inválida\");",
+							"});",
+							"",
+							"pm.test(\"A resposta não registra nenhuma baixa\", function () {",
+							"    pm.expect(body).to.not.have.property(\"quantidadeEmEstoque\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"quantidade\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/produtos/{{codigoProduto}}/saida",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"produtos",
+						"{{codigoProduto}}",
+						"saida"
+					]
+				},
+				"description": "Com o estoque zerado pelo passo 4, qualquer saída deve ser recusada."
+			},
+			"response": []
+		},
+		{
+			"name": "6. GET confirma que o estoque continua 0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// Mesma ideia do passo 3: a recusa do passo 5 não pode ter deixado",
+							"// o estoque negativo.",
+							"",
+							"pm.test(\"Status 200 - produto encontrado\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"const body = pm.response.json();",
+							"",
+							"pm.test(\"O estoque continua 0, não ficou negativo\", function () {",
+							"    pm.expect(body.quantidadeEmEstoque).to.eql(0);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/produtos/{{codigoProduto}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"produtos",
+						"{{codigoProduto}}"
+					]
+				},
+				"description": "Confere que a saída recusada no passo 5 não deixou o estoque negativo."
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:7070",
+			"type": "string"
+		},
+		{
+			"key": "codigoProduto",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

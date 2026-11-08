@@ -33,6 +33,26 @@ public class FornecedoresService {
             return null;
         }
     }
+    /**
+     * Cadastra um fornecedor a partir de parametros, sem Scanner.
+     * Versao usada pela API HTTP (ApiMain); a versao com Scanner acima
+     * continua sendo a usada pelo menu de console.
+     *
+     * @return o fornecedor criado, ou null se os dados forem invalidos
+     *         ou se o CNPJ ja estiver cadastrado.
+     */
+    public Fornecedor cadastrarFornecedor(String nome, String cnpj) {
+        if (nome == null || nome.isBlank() || cnpj == null || cnpj.isBlank()) {
+            return null;
+        }
+        if (cnpjJaCadastrado(cnpj)) {
+            return null;
+        }
+        Fornecedor novoFornecedor = new Fornecedor(nome, cnpj);
+        fornecedores.add(novoFornecedor);
+        return novoFornecedor;
+    }
+
     // Buscar um fornecedor pelo CNPJ
     public Fornecedor buscarFornecedorPorCNPJ(String cnpj) {
         return fornecedores.stream()

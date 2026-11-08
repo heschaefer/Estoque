@@ -1,0 +1,50 @@
+name: Testes
+
+# Quando o workflow roda:
+# - push: a cada envio de commits para qualquer branch
+# - pull_request: a cada PR aberto ou atualizado
+on:
+  push:
+  pull_request:
+
+jobs:
+  testes-junit:
+    name: Testes JUnit (Java 17)
+    runs-on: ubuntu-latest
+
+    # O pom.xml fica na pasta Estoque/, e nao na raiz do repositorio.
+    # Isso faz todos os "run" deste job rodarem de dentro dela.
+    defaults:
+      run:
+        working-directory: Estoque
+
+    steps:
+      # 1) Baixa o codigo do repositorio para a maquina do CI
+      - name: Baixar o codigo
+        uses: actions/checkout@v4
+
+      # 2) Instala o Java 17 (Temurin) e liga o cache do Maven.
+      #    O cache guarda as dependencias baixadas (~/.m2) entre execucoes,
+      #    deixando as rodadas seguintes bem mais rapidas.
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      # 3) Executa os testes JUnit.
+      #    -B (batch mode) deixa o log limpo, sem barras de progresso.
+      - name: Rodar os testes
+        run: mvn -B test
+
+      # 4) Publica os relatorios do Surefire como artefato para download.
+      #    if: always() faz este passo rodar MESMO SE os testes falharem —
+      #    que e justamente quando o relatorio mais interessa.
+      - name: Publicar relatorios do Surefire
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios-surefire
+          path: Estoque/target/surefire-reports/
+          if-no-files-found: warn
