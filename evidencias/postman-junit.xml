@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Estoque - Regra de saída de estoque" tests="6" time="0.162">
+  <testsuite name="1. Cadastrar produto com estoque 10" id="14633f92-7fb7-4384-aab6-c580fe09e491" timestamp="2026-11-08T19:37:14.530Z" tests="4" failures="0" errors="0" time="0.126">
+    <testcase name="Status 201 - produto cadastrado" time="0.126" classname="1CadastrarProdutoComEstoque10"/>
+    <testcase name="A resposta traz o código que foi enviado" time="0.126" classname="1CadastrarProdutoComEstoque10"/>
+    <testcase name="O produto nasce com 10 unidades em estoque" time="0.126" classname="1CadastrarProdutoComEstoque10"/>
+    <testcase name="O fornecedor vem achatado, sem objeto aninhado" time="0.126" classname="1CadastrarProdutoComEstoque10"/>
+  </testsuite>
+  <testsuite name="2. Saída de 11 deve ser recusada (acima do estoque)" id="743b4780-4cdc-40b4-b07f-f6577c6608f4" timestamp="2026-11-08T19:37:14.530Z" tests="3" failures="0" errors="0" time="0.013">
+    <testcase name="Status 400 - saída acima do estoque é recusada" time="0.013" classname="2SaidaDe11DeveSerRecusadaAcimaDoEstoque"/>
+    <testcase name="A resposta traz a mensagem de erro esperada" time="0.013" classname="2SaidaDe11DeveSerRecusadaAcimaDoEstoque"/>
+    <testcase name="A resposta não registra nenhuma baixa" time="0.013" classname="2SaidaDe11DeveSerRecusadaAcimaDoEstoque"/>
+  </testsuite>
+  <testsuite name="3. GET confirma que o estoque continua 10" id="8f9e77d7-88c5-4390-b4f1-a696b580cfca" timestamp="2026-11-08T19:37:14.530Z" tests="3" failures="0" errors="0" time="0.009">
+    <testcase name="Status 200 - produto encontrado" time="0.009" classname="3GetConfirmaQueOEstoqueContinua10"/>
+    <testcase name="O estoque continua 10 - a recusa não alterou nada" time="0.009" classname="3GetConfirmaQueOEstoqueContinua10"/>
+    <testcase name="É o mesmo produto cadastrado no passo 1" time="0.009" classname="3GetConfirmaQueOEstoqueContinua10"/>
+  </testsuite>
+  <testsuite name="4. Saída de 10 deve zerar o estoque" id="00ca6158-fe11-4a9f-b79a-d71f4659c16b" timestamp="2026-11-08T19:37:14.530Z" tests="3" failures="0" errors="0" time="0.007">
+    <testcase name="Status 200 - saída igual ao estoque é aceita" time="0.007" classname="4SaidaDe10DeveZerarOEstoque"/>
+    <testcase name="A resposta traz o código do produto" time="0.007" classname="4SaidaDe10DeveZerarOEstoque"/>
+    <testcase name="O estoque ficou zerado" time="0.007" classname="4SaidaDe10DeveZerarOEstoque"/>
+  </testsuite>
+  <testsuite name="5. Saída de 1 com estoque zerado deve ser recusada" id="fddba671-f415-41cd-bacf-ab078d07b09f" timestamp="2026-11-08T19:37:14.530Z" tests="3" failures="0" errors="0" time="0.004">
+    <testcase name="Status 400 - não há estoque para retirar" time="0.004" classname="5SaidaDe1ComEstoqueZeradoDeveSerRecusada"/>
+    <testcase name="A resposta traz a mensagem de erro esperada" time="0.004" classname="5SaidaDe1ComEstoqueZeradoDeveSerRecusada"/>
+    <testcase name="A resposta não registra nenhuma baixa" time="0.004" classname="5SaidaDe1ComEstoqueZeradoDeveSerRecusada"/>
+  </testsuite>
+  <testsuite name="6. GET confirma que o estoque continua 0" id="5dcf3ebd-c519-492e-888f-b7ff72775800" timestamp="2026-11-08T19:37:14.530Z" tests="2" failures="0" errors="0" time="0.003">
+    <testcase name="Status 200 - produto encontrado" time="0.003" classname="6GetConfirmaQueOEstoqueContinua0"/>
+    <testcase name="O estoque continua 0, não ficou negativo" time="0.003" classname="6GetConfirmaQueOEstoqueContinua0"/>
+  </testsuite>
+</testsuites>

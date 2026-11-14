@@ -1,0 +1,24 @@
+Evidência: execução do GitHub Actions (parte de Qualidade)
+Consultado em 08/11/2026 pela API pública do GitHub.
+
+Workflow: Testes  (.github/workflows/testes.yml)
+Run: #1 (id 42489555738)
+Evento: push
+Branch: main
+Commit: c20e900b5beee0cff94190d25995f80af10c5c4e
+Mensagem: Testes da regra de saída de estoque (JUnit + Postman) e projeto Maven
+Status: completed
+Resultado: success
+Início: 2026-11-08 11:23:13 (horário de Brasília)
+Fim:    2026-11-08 11:23:37 (horário de Brasília)
+Link: https://github.com/heschaefer/Estoque/actions/runs/42489555738
+
+Job: Testes JUnit (Java 17) -> success
+  [success] Set up job
+  [success] Baixar o codigo
+  [success] Configurar Java 17
+  [success] Rodar os testes
+  [success] Publicar relatorios do Surefire
+  [success] Post Configurar Java 17
+  [success] Post Baixar o codigo
+  [success] Complete job

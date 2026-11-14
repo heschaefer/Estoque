@@ -1,0 +1,59 @@
+newman
+
+Estoque - Regra de saída de estoque
+
+→ 1. Cadastrar produto com estoque 10
+  POST http://localhost:7070/produtos [201 Created, 291B, 126ms]
+  √  Status 201 - produto cadastrado
+  √  A resposta traz o código que foi enviado
+  √  O produto nasce com 10 unidades em estoque
+  √  O fornecedor vem achatado, sem objeto aninhado
+
+→ 2. Saída de 11 deve ser recusada (acima do estoque)
+  POST http://localhost:7070/produtos/QTS-1794166634544/saida [400 Bad Request, 158B, 13ms]
+  √  Status 400 - saída acima do estoque é recusada
+  √  A resposta traz a mensagem de erro esperada
+  √  A resposta não registra nenhuma baixa
+
+→ 3. GET confirma que o estoque continua 10
+  GET http://localhost:7070/produtos/QTS-1794166634544 [200 OK, 286B, 9ms]
+  √  Status 200 - produto encontrado
+  √  O estoque continua 10 - a recusa não alterou nada
+  √  É o mesmo produto cadastrado no passo 1
+
+→ 4. Saída de 10 deve zerar o estoque
+  POST http://localhost:7070/produtos/QTS-1794166634544/saida [200 OK, 162B, 7ms]
+  √  Status 200 - saída igual ao estoque é aceita
+  √  A resposta traz o código do produto
+  √  O estoque ficou zerado
+
+→ 5. Saída de 1 com estoque zerado deve ser recusada
+  POST http://localhost:7070/produtos/QTS-1794166634544/saida [400 Bad Request, 158B, 4ms]
+  √  Status 400 - não há estoque para retirar
+  √  A resposta traz a mensagem de erro esperada
+  √  A resposta não registra nenhuma baixa
+
+→ 6. GET confirma que o estoque continua 0
+  GET http://localhost:7070/produtos/QTS-1794166634544 [200 OK, 285B, 3ms]
+  √  Status 200 - produto encontrado
+  √  O estoque continua 0, não ficou negativo
+
+┌─────────────────────────┬───────────────────┬──────────────────┐
+│                         │          executed │           failed │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│              iterations │                 1 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│                requests │                 6 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│            test-scripts │                 6 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│      prerequest-scripts │                 1 │                0 │
+├─────────────────────────┼───────────────────┼──────────────────┤
+│              assertions │                18 │                0 │
+├─────────────────────────┴───────────────────┴──────────────────┤
+│ total run duration: 659ms                                      │
+├────────────────────────────────────────────────────────────────┤
+│ total data received: 666B (approx)                             │
+├────────────────────────────────────────────────────────────────┤
+│ average response time: 27ms [min: 3ms, max: 126ms, s.d.: 44ms] │
+└────────────────────────────────────────────────────────────────┘
